@@ -1,16 +1,42 @@
 <script setup>
 import { useTodoListStore } from "../stores/todoList.js";
+import { storeToRefs } from "pinia";
 
 const store = useTodoListStore();
+const { todoList } = storeToRefs(store);
+const { toggleCompleted, deleteTodo } = store;
 </script>
 
 <template>
-  <ul>
-    <li v-for="todo in store.todoList">
-      {{ todo.item
-      }}<button @click="store.deleteTodo(todo.id)">Delete Item</button>
-    </li>
-  </ul>
+  <div v-for="todo in todoList" :key="todo.id" class="item">
+    <div class="content">
+      <span :class="{ completed: todo.completed }">{{ todo.item }}</span>
+      <span @click.stop="toggleCompleted(todo.id)">&#10004;</span>
+      <span @click.stop="deleteTodo(todo.id)">&#10060;</span>
+    </div>
+  </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.completed {
+  text-decoration: line-through;
+}
+span {
+  margin: 0 10px;
+  cursor: pointer;
+}
+.item {
+  display: flex;
+  justify-content: center;
+}
+.content {
+  display: flex;
+  font-size: 1.5em;
+  justify-content: space-between;
+  width: 80vw;
+  padding: 5px;
+}
+.completed {
+  text-decoration: line-through;
+}
+</style>
